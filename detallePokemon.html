@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Detalle Pokemon</title>
+  </head>
+  <body id="cuerpo" onload="loadUrlPokemon()">
+    <br>
+    <div class="container-fluid">
+      <div class="row d-flex justify-content-start">
+        <div class="col-3" id="gif1"></div>
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="col-5" id="pokemon"></div>
+      </div>
+      <div class="row d-flex justify-content-end">
+        <div class="col-3 d-flex justify-content-end" id="gifShiny"></div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  const MovsPoke=[]
+  function loadUrlPokemon() {
+    let urlPokemon = localStorage.urlPokemon;
+    fetch(urlPokemon)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        document.getElementById("pokemon").innerHTML =
+         `<div class="card" style="width: 38rem;">
+            <img id="imagenPoke" class="card-img-top" src="..." alt="Card image cap">
+            <div  class="card-body text-align-center">
+              <h3 class="card-title d-flex justify-content-center">${data.name}</h3>
+              <p class="card-text"><b>Estadisticas:</b>
+                <br>
+                ${data.stats[0].stat.name} = ${data.stats[0].base_stat}
+                <br>
+                ${data.stats[1].stat.name} = ${data.stats[1].base_stat}
+                <br>
+                ${data.stats[2].stat.name} = ${data.stats[2].base_stat}
+                <br>
+                ${data.stats[3].stat.name} = ${data.stats[3].base_stat}
+                <br>
+                ${data.stats[4].stat.name} = ${data.stats[4].base_stat}
+                <br>
+                ${data.stats[5].stat.name} = ${data.stats[5].base_stat}
+              </p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">N° en la Pokedex: ${data.id}</li>
+              <li id="habilidades"  class="list-group-item"></li>
+              <li id="movimientos"class="list-group-item"></li>
+            </ul>
+            <div class="card-body">
+              <a href="tipos.html" class="card-link">Catalogo</a>
+              <a href="index.html" class="card-link">Pagina Principal</a>
+            </div>
+          </div>`
+        document.getElementById("gif1").innerHTML = `
+        <div>
+        <img id="gifPoke1" src="...">
+        <img id="gifPoke2" src="...">
+        </div>`
+        document.getElementById("gifShiny").innerHTML = `
+        <div>
+        <img id="gifPokeShiny1" src="...">
+        <img id="gifPokeShiny2" src="...">
+        </div>`
+        data.moves.forEach((element, index) =>{
+          MovsPoke.push(`<br> ${element.move.name}`)
+        });
+        let habilidad1;
+        let habilidad2;
+        let habilidadOculta;
+        data.abilities.forEach((element, index) => {
+          if (index === 0){
+              habilidad1 = `<br> ${element.ability.name}`
+          }
+          if (index === 1){
+            habilidad2 = `<br> ${element.ability.name}`
+          }
+          if (index === 2){
+            habilidadOculta = `<br> ${element.ability.name} (Habilidad Oculta)`
+          }
+          if (habilidadOculta === undefined){
+            habilidadOculta= ""
+          }
+          if (habilidad2 === undefined){
+            habilidad2= ""
+          }
+        });
+        console.log(MovsPoke)
+        document.getElementById("movimientos").innerHTML = `<b>Movimietos Que Conoce:</b> ${MovsPoke}`
+        document.getElementById("habilidades").innerHTML = `<b>Habilidades:</b> ${habilidad1} ${habilidad2} ${habilidadOculta}`
+        let gifPoke1 = data.sprites.versions["generation-v"]["black-white"].animated.back_default;
+        let gifPoke2 = data.sprites.versions["generation-v"]["black-white"].animated.front_default;
+        document.getElementById("gifPoke1").src = gifPoke1;
+        document.getElementById("gifPoke2").src = gifPoke2;
+        let gifPokeShiny1 = data.sprites.versions["generation-v"]["black-white"].animated.back_shiny;
+        let gifPokeShiny2 = data.sprites.versions["generation-v"]["black-white"].animated.front_shiny;
+        document.getElementById("gifPokeShiny1").src = gifPokeShiny1;
+        document.getElementById("gifPokeShiny2").src = gifPokeShiny2;
+        let imagenPoke = data.sprites.other["official-artwork"].front_default;
+        document.getElementById("imagenPoke").src = imagenPoke;
+        
+      });
+  }
+</script>
